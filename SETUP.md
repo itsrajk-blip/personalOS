@@ -20,8 +20,8 @@ Keep a scratch note open (not in this repo) to paste values into as you go. You'
 2. Name: `personalos`. Region: **Sydney**. Set a strong database password and save it in your password manager. Free plan.
 3. When the project is ready, open **SQL Editor** → **New query**. Open [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) in GitHub, copy the whole file, paste it, and click **Run**. It should say "Success. No rows returned".
 4. New query again: paste [`supabase/migrations/0002_storage.sql`](supabase/migrations/0002_storage.sql) and **Run**.
-5. Go to **Project Settings** → **API Keys**. Copy:
-   - the **Project URL** (looks like `https://abcd1234.supabase.co`)
+5. Get your **Project URL** (looks like `https://abcd1234.supabase.co`). It isn't on the API Keys page. Easiest: your browser's address bar shows `supabase.com/dashboard/project/abcd1234/...`; your URL is `https://abcd1234.supabase.co`. It's also under the **Connect** button at the top of the dashboard, and in **Project Settings** → **Data API**. Check it by opening `https://abcd1234.supabase.co/rest/v1/` in a browser: a "no API key" error means it's right.
+6. Go to **Project Settings** → **API Keys**. Copy:
    - the **publishable** key (`sb_publishable_...`)
    - the **secret** key (`sb_secret_...`). Treat this like a password.
 
