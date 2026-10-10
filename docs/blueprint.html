@@ -243,7 +243,7 @@ html { scroll-behavior: smooth; }
           <div class="eyebrow">Who it's about</div>
           <div class="chipset">
             <span class="tag"><span class="dot" style="background:var(--c-me)"></span>Me</span>
-            <span class="tag"><span class="dot" style="background:var(--c-wife)"></span>Wife <span class="muted">(name TBC)</span></span>
+            <span class="tag"><span class="dot" style="background:var(--c-wife)"></span>Arpita</span>
             <span class="tag"><span class="dot" style="background:var(--c-joey)"></span>Joey</span>
             <span class="tag"><span class="dot" style="background:var(--c-house)"></span>House</span>
             <span class="tag"><span class="dot" style="background:var(--c-car)"></span>Honda HR-V</span>
@@ -755,7 +755,7 @@ flowchart TD
             <div class="ph-title"><h4>Browse</h4><span>Search</span></div>
             <div class="set">
               <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-me)"></span>Me</span><span class="v">41 items · 2 open</span></div>
-              <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-wife)"></span>Wife</span><span class="v">12 items</span></div>
+              <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-wife)"></span>Arpita</span><span class="v">12 items</span></div>
               <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-joey)"></span>Joey</span><span class="v">23 items · 1 open</span></div>
               <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-house)"></span>House</span><span class="v">18 items · 1 open</span></div>
               <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-car)"></span>Honda HR-V</span><span class="v">7 items · 1 open</span></div>
@@ -784,8 +784,9 @@ flowchart TD
       <p class="lede">Approve or change these, then the build starts at milestone 1.</p>
     </div>
     <div class="decisions col">
-      <div class="decision"><strong>Your wife's name</strong><span class="muted">Shown as "Wife" until you tell me. Can also be changed in Settings at any time.</span></div>
-      <div class="decision"><strong>"Jev"</strong><span class="muted">I didn't recognise the tool you mentioned. Tell me what it is and I'll say whether it earns a place.</span></div>
+      <div class="decision"><strong>Resolved: wife's name is Arpita</strong><span class="muted">Used throughout. Editable in Settings.</span></div>
+      <div class="decision"><strong>Resolved: voice is iPhone dictation in v1</strong><span class="muted">Confirmed by Raj on 10 Oct.</span></div>
+      <div class="decision"><strong>Jev (TypeSafe AI): not in v1, revisit later</strong><span class="muted">A fast classification model launched in early access in September 2026. It could take over the "is this email relevant?" step, but at this volume Haiku costs cents a month, and Jev doesn't cover date extraction, summaries or photos. The Gmail triage step will sit behind its own interface, so swapping it in later is a small change.</span></div>
       <div class="decision"><strong>Model split</strong><span class="muted">Haiku 5.5 for extraction, Sonnet 5.5 for briefs, no Opus. Approve or change.</span></div>
       <div class="decision"><strong>No vectors in v1</strong><span class="muted">Tags plus keyword search. Embeddings only if Ask misses things in practice.</span></div>
       <div class="decision"><strong>Gmail finds need a tap to keep</strong><span class="muted">New Gmail items wait under "New from Gmail" until you keep or dismiss them. The alternative is filing them silently, with less control and more noise.</span></div>
