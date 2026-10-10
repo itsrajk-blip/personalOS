@@ -281,3 +281,20 @@ details.menu[open] > .menu-list {
 .empty { text-align: center; color: var(--muted); padding: 28px 12px; font-size: 15px; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Loading placeholders */
+.skeleton { background: var(--line); border-radius: 8px; animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+/* Top progress bar shown while a tapped page loads */
+.navbar-progress {
+  position: fixed; z-index: 50; top: 0; left: 0; right: 0;
+  height: calc(env(safe-area-inset-top, 0px) + 3px);
+  pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 40%, var(--accent) 60%, transparent 100%) no-repeat;
+  background-size: 40% 100%;
+  transition: opacity 0.15s;
+}
+.navbar-progress.on { opacity: 1; animation: slide 0.9s ease-in-out infinite; }
+@keyframes slide { from { background-position: -60% 0; } to { background-position: 160% 0; } }
+@media (prefers-reduced-motion: reduce) { .navbar-progress.on { animation: none; background: var(--accent); } }

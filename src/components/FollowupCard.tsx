@@ -3,6 +3,7 @@ import { completeFollowup, snoozeFollowup } from "@/app/(app)/actions";
 import { shortDate } from "@/lib/dates";
 import { bucketFor, dueLabel, snoozeTargets } from "@/lib/followups";
 import type { FollowupView } from "@/lib/types";
+import { ActionButton, OptimisticCard } from "./OptimisticCard";
 import { TagRow } from "./Tags";
 
 const STYLE: Record<string, string> = { overdue: "overdue", today: "today", waiting: "waiting", upcoming: "", anytime: "", later: "" };
@@ -23,7 +24,7 @@ export function FollowupCard({ f, today }: { f: FollowupView; today: string }) {
         ? `Expected ${dueLabel(f.due_date, today).replace(/^(In|Tomorrow)/, (w) => w.toLowerCase())}`
         : dueLabel(f.due_date, today);
   return (
-    <div className={`card task ${style}`}>
+    <OptimisticCard className={`card task ${style}`}>
       <div className="task-top">
         <Link href={`/items/${f.item_id}`} className="task-title" style={{ color: "var(--ink)" }}>
           {f.title}
@@ -35,24 +36,17 @@ export function FollowupCard({ f, today }: { f: FollowupView; today: string }) {
         <span className="mono" style={{ fontSize: 11 }}>{sourceLine(f.item, today)}</span>
       </div>
       <div className="actions">
-        <form action={completeFollowup}>
-          <input type="hidden" name="id" value={f.id} />
-          <button className="btn small primary" type="submit">Done</button>
-        </form>
+        <ActionButton action={completeFollowup} fields={{ id: f.id }} label="Done" className="btn small primary" hides />
         <details className="menu">
           <summary className="btn small">Snooze</summary>
           <div className="menu-list">
             {snoozeTargets(today).map((t) => (
-              <form key={t.date} action={snoozeFollowup}>
-                <input type="hidden" name="id" value={f.id} />
-                <input type="hidden" name="until" value={t.date} />
-                <button type="submit">{t.label}</button>
-              </form>
+              <ActionButton key={t.date} action={snoozeFollowup} fields={{ id: f.id, until: t.date }} label={t.label} className="" hides />
             ))}
           </div>
         </details>
         <Link className="btn small" href={`/items/${f.item_id}`}>Open</Link>
       </div>
-    </div>
+    </OptimisticCard>
   );
 }

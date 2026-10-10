@@ -19,13 +19,15 @@ export const getContext = cache(async (): Promise<Ctx | null> => {
     return { user: dev, store };
   }
   const supabase = await userClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user || !isAllowedEmail(user.email)) return null;
-  const store = new Store(supabase, user.id);
+  // Verifies the session token locally against Supabase's public signing keys, so it costs no
+  // network round trip once the keys are cached (getUser would ask the Auth server every time).
+  const { data } = await supabase.auth.getClaims();
+  const id = data?.claims?.sub;
+  const email = typeof data?.claims?.email === "string" ? data.claims.email : null;
+  if (!id || !isAllowedEmail(email)) return null;
+  const store = new Store(supabase, id);
   await store.ensureSeeded();
-  return { user: { id: user.id, email: user.email! }, store };
+  return { user: { id, email: email! }, store };
 });
 
 /** Same as getContext, but sends visitors who aren't signed in to the sign-in page. */

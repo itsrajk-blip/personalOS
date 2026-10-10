@@ -60,6 +60,7 @@ export interface ItemQuery {
 
 const ITEM_SELECT = "*, item_subjects(subject_id), item_areas(area_id), followups(*)";
 const VISIBLE: ItemStatus[] = ["ready", "failed", "processing"];
+const seededOwners = new Set<string>();
 
 export class Store {
   private subjectsCache: Subject[] | null = null;
@@ -74,11 +75,16 @@ export class Store {
 
   /** Creates the default who and area lists on first sign-in. Safe to call repeatedly. */
   async ensureSeeded(): Promise<void> {
+    // Seeding happens once per owner; skip the database check for the life of this server instance.
+    if (seededOwners.has(this.ownerId)) return;
     const state = check(
       await this.db.from("app_state").select("seeded").eq("owner_id", this.ownerId).maybeSingle(),
       "read app state",
     );
-    if (state?.seeded) return;
+    if (state?.seeded) {
+      seededOwners.add(this.ownerId);
+      return;
+    }
     check(
       await this.db.from("subjects").upsert(
         DEFAULT_SUBJECTS.map((s) => ({ ...s, owner_id: this.ownerId })),
@@ -99,6 +105,7 @@ export class Store {
     );
     this.subjectsCache = null;
     this.areasCache = null;
+    seededOwners.add(this.ownerId);
   }
 
   async appState(): Promise<{ timezone: string; last_morning_push: string | null }> {

@@ -26,12 +26,10 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  // Refreshes the session cookie when needed.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Refreshes the session cookie when needed, and checks the token locally (no Auth server call).
+  const { data } = await supabase.auth.getClaims();
 
-  if (!user) {
+  if (!data?.claims?.sub) {
     if (path.startsWith("/api/")) return NextResponse.json({ error: "Sign in first." }, { status: 401 });
     const url = request.nextUrl.clone();
     url.pathname = "/login";

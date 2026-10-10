@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { usePendingHref } from "./NavProgress";
 
 const icon = (d: string) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -17,7 +18,10 @@ const TABS = [
 ];
 
 export function TabBar() {
-  const path = usePathname();
+  const pending = usePendingHref();
+  const current = usePathname();
+  // While a tapped page loads, highlight the tab you tapped rather than the one you're leaving.
+  const path = pending ? pending.split("?")[0] : current;
   const active = (href: string) =>
     href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`) || (href === "/browse" && path.startsWith("/timeline"));
   return (

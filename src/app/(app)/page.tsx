@@ -2,6 +2,7 @@ import Link from "next/link";
 import { after } from "next/server";
 import { dismissItem, keepItem } from "./actions";
 import { FollowupCard } from "@/components/FollowupCard";
+import { ActionButton, OptimisticCard } from "@/components/OptimisticCard";
 import { TagRow } from "@/components/Tags";
 import { adminStore, requireContext } from "@/lib/auth";
 import { longDate, shortDate, todayIn } from "@/lib/dates";
@@ -110,7 +111,7 @@ function Section({ title, items, today }: { title: string; items: FollowupView[]
 function ReviewCard({ item, today }: { item: ItemView; today: string }) {
   const open = item.followups.filter((f) => f.status === "open");
   return (
-    <div className="card task new">
+    <OptimisticCard className="card task new">
       <div className="task-top">
         <Link href={`/items/${item.id}`} className="task-title" style={{ color: "var(--ink)" }}>
           {item.summary ?? item.email_subject ?? "Email"}
@@ -131,16 +132,10 @@ function ReviewCard({ item, today }: { item: ItemView; today: string }) {
         </span>
       </div>
       <div className="actions">
-        <form action={keepItem}>
-          <input type="hidden" name="id" value={item.id} />
-          <button className="btn small primary" type="submit">Keep</button>
-        </form>
-        <form action={dismissItem}>
-          <input type="hidden" name="id" value={item.id} />
-          <button className="btn small" type="submit">Dismiss</button>
-        </form>
+        <ActionButton action={keepItem} fields={{ id: item.id }} label="Keep" className="btn small primary" hides />
+        <ActionButton action={dismissItem} fields={{ id: item.id }} label="Dismiss" hides />
         <Link className="btn small" href={`/items/${item.id}`}>Open</Link>
       </div>
-    </div>
+    </OptimisticCard>
   );
 }
