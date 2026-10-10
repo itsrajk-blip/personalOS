@@ -1,0 +1,797 @@
+<title>PersonalOS Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column (PRD, architecture) that widens into a grid of phone frames for the screens section. */
+:root {
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --ink: #17201d;
+  --muted: #5b6763;
+  --line: #d8dfdc;
+  --accent: #2346b8;
+  --accent-soft: #e6ebfa;
+  --overdue: #b42318;
+  --overdue-soft: #fdecea;
+  --today: #a05a00;
+  --today-soft: #fdf1df;
+  --waiting: #3d5a6c;
+  --waiting-soft: #e7eff3;
+  --ok: #1f7a4d;
+  --ok-soft: #e3f3ea;
+  --phone-bg: #fbfcfb;
+  --phone-frame: #1e2724;
+  --c-me: #2346b8; --c-wife: #a3367a; --c-joey: #b26b00; --c-house: #3b7a57; --c-car: #4b5563; --c-family: #7a4fb0;
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Sans 3", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111715; --surface: #18201d; --ink: #e6ecea; --muted: #9aa8a3; --line: #2c3632;
+    --accent: #8fa6ff; --accent-soft: #1f2846;
+    --overdue: #ff8a7a; --overdue-soft: #3a1f1c; --today: #f0b45a; --today-soft: #36290f;
+    --waiting: #9cc0d4; --waiting-soft: #1c2a32; --ok: #6fd3a0; --ok-soft: #15301f;
+    --phone-bg: #141b18; --phone-frame: #0a0e0c;
+    --c-me: #8fa6ff; --c-wife: #f08ac8; --c-joey: #f0b45a; --c-house: #7fcf9f; --c-car: #b4bcc8; --c-family: #c6a3f5;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111715; --surface: #18201d; --ink: #e6ecea; --muted: #9aa8a3; --line: #2c3632;
+  --accent: #8fa6ff; --accent-soft: #1f2846;
+  --overdue: #ff8a7a; --overdue-soft: #3a1f1c; --today: #f0b45a; --today-soft: #36290f;
+  --waiting: #9cc0d4; --waiting-soft: #1c2a32; --ok: #6fd3a0; --ok-soft: #15301f;
+  --phone-bg: #141b18; --phone-frame: #0a0e0c;
+  --c-me: #8fa6ff; --c-wife: #f08ac8; --c-joey: #f0b45a; --c-house: #7fcf9f; --c-car: #b4bcc8; --c-family: #c6a3f5;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; padding: 0 16px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 32px 80px; }
+.col { max-width: 720px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.15rem; color: var(--muted); max-width: 62ch; }
+header.top { display: grid; gap: 14px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { font-family: var(--f-mono); font-size: 0.75rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: var(--surface); }
+.pill.draft { color: var(--today); border-color: currentColor; background: var(--today-soft); }
+nav.toc { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); margin: 0 -16px; padding: 10px 16px; display: flex; gap: 6px; overflow-x: auto; }
+nav.toc a { font-weight: 600; font-size: 0.95rem; color: var(--ink); text-decoration: none; padding: 6px 12px; border-radius: 8px; white-space: nowrap; }
+nav.toc a:hover, nav.toc a:focus-visible { background: var(--accent-soft); color: var(--accent); outline: none; }
+section.part { padding-top: 48px; display: grid; gap: 22px; }
+.part-head { display: grid; gap: 6px; }
+.block { display: grid; gap: 10px; }
+ul, ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+li { padding-left: 2px; }
+strong { font-weight: 700; }
+.muted { color: var(--muted); }
+.tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--f-mono); font-size: 0.85rem; white-space: nowrap; }
+code { font-family: var(--f-mono); font-size: 0.85em; background: var(--accent-soft); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+.callout { border-left: 3px solid var(--accent); background: var(--surface); padding: 14px 16px; border-radius: 0 8px 8px 0; display: grid; gap: 6px; }
+.callout.warn { border-left-color: var(--today); }
+.chipset { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.diagram { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.diagram pre.mermaid { margin: 0; min-width: 640px; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+
+/* ---------- Phone mockups ---------- */
+.screens { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px 20px; }
+.screen { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.screen-cap { display: grid; gap: 2px; }
+.screen-cap h3 { font-size: 1.05rem; }
+.screen-cap p { color: var(--muted); font-size: 0.92rem; }
+.phone { width: 100%; max-width: 340px; border-radius: 34px; background: var(--phone-frame); padding: 10px; }
+.ph { background: var(--phone-bg); border-radius: 26px; overflow: hidden; display: flex; flex-direction: column; height: 640px; font-size: 14px; line-height: 1.4; }
+.ph-status { display: flex; justify-content: space-between; padding: 10px 20px 4px; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.ph-body { flex: 1; overflow: hidden; padding: 6px 14px 10px; display: flex; flex-direction: column; gap: 10px; }
+.ph-title { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.ph-title h4 { font-family: var(--f-display); font-size: 24px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+.ph-title span { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.sec { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; }
+.task { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 11px; display: grid; gap: 6px; position: relative; overflow: hidden; }
+.task::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--line); }
+.task.overdue::before { background: var(--overdue); }
+.task.due::before { background: var(--today); }
+.task.wait::before { background: var(--waiting); }
+.task.new::before { background: var(--accent); }
+.task-top { display: flex; justify-content: space-between; gap: 8px; align-items: start; }
+.task-title { font-weight: 600; font-size: 14px; }
+.state { font-family: var(--f-mono); font-size: 10px; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
+.state.overdue { background: var(--overdue-soft); color: var(--overdue); }
+.state.due { background: var(--today-soft); color: var(--today); }
+.state.wait { background: var(--waiting-soft); color: var(--waiting); }
+.state.new { background: var(--accent-soft); color: var(--accent); }
+.state.ok { background: var(--ok-soft); color: var(--ok); }
+.task-meta { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; font-size: 11.5px; color: var(--muted); }
+.mini { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink); background: var(--phone-bg); }
+.mini .dot { width: 6px; height: 6px; }
+.src { font-family: var(--f-mono); font-size: 10px; color: var(--muted); }
+.actions { display: flex; gap: 6px; }
+.btn { font-family: var(--f-body); font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 8px; border: 1px solid var(--line); background: var(--phone-bg); color: var(--ink); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--phone-bg); }
+.ph-tabs { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--line); background: var(--surface); padding: 8px 4px 14px; }
+.ph-tabs div { display: grid; justify-items: center; gap: 3px; font-size: 10px; color: var(--muted); }
+.ph-tabs div.on { color: var(--accent); font-weight: 700; }
+.ph-tabs i { display: block; width: 20px; height: 20px; border-radius: 6px; border: 1.6px solid currentColor; }
+.ph-tabs .plus i { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); border-color: var(--accent); position: relative; margin-top: -10px; }
+.ph-tabs .plus i::before, .ph-tabs .plus i::after { content: ""; position: absolute; left: 50%; top: 50%; background: var(--phone-bg); transform: translate(-50%, -50%); }
+.ph-tabs .plus i::before { width: 14px; height: 2px; }
+.ph-tabs .plus i::after { width: 2px; height: 14px; }
+.input { background: var(--surface); border: 1.5px solid var(--accent); border-radius: 12px; padding: 10px 11px; min-height: 92px; color: var(--ink); font-size: 14px; }
+.hint { font-size: 11.5px; color: var(--muted); }
+.row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.tile { border: 1px dashed var(--line); border-radius: 10px; padding: 9px 6px; text-align: center; font-size: 11.5px; font-weight: 600; color: var(--ink); background: var(--surface); }
+.filed { background: var(--ok-soft); border: 1px solid var(--line); border-radius: 12px; padding: 10px 11px; display: grid; gap: 6px; }
+.filed b { color: var(--ok); font-size: 12px; }
+.kv { display: grid; grid-template-columns: 70px 1fr; gap: 3px 8px; font-size: 12px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; }
+.subject-head { display: flex; gap: 10px; align-items: center; }
+.avatar { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-display); font-weight: 700; font-size: 18px; color: var(--phone-bg); background: var(--c-joey); flex: none; }
+.filters { display: flex; gap: 5px; flex-wrap: wrap; }
+.filters span { font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); }
+.filters span.on { background: var(--ink); color: var(--phone-bg); border-color: var(--ink); }
+.tl { display: grid; gap: 0; border-left: 2px solid var(--line); margin-left: 6px; }
+.tl-item { position: relative; padding: 0 0 12px 14px; display: grid; gap: 3px; }
+.tl-item::before { content: ""; position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--phone-bg); border: 2px solid var(--c-joey); }
+.tl-date { font-family: var(--f-mono); font-size: 10.5px; color: var(--muted); }
+.tl-text { font-size: 13px; }
+.thumb { width: 54px; height: 40px; border-radius: 6px; background: linear-gradient(135deg, var(--today-soft), var(--line)); border: 1px solid var(--line); }
+.cta { display: block; text-align: center; background: var(--accent); color: var(--phone-bg); font-weight: 700; padding: 10px; border-radius: 12px; font-size: 14px; }
+.q { align-self: end; background: var(--accent); color: var(--phone-bg); padding: 8px 12px; border-radius: 14px 14px 4px 14px; font-size: 13.5px; max-width: 85%; margin-left: auto; }
+.brief { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 11px 12px; display: grid; gap: 8px; font-size: 12.5px; }
+.brief h5 { margin: 0; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.brief ul { padding-left: 1em; gap: 2px; }
+.brief .d { font-family: var(--f-mono); font-size: 10.5px; color: var(--muted); }
+.cite { font-family: var(--f-mono); font-size: 9.5px; color: var(--accent); }
+.set { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; display: grid; }
+.set > div { display: flex; justify-content: space-between; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 13px; align-items: center; }
+.set > div:last-child { border-bottom: 0; }
+.set .v { color: var(--muted); font-size: 12px; text-align: right; }
+.toggle { width: 34px; height: 20px; border-radius: 999px; background: var(--ok); position: relative; flex: none; }
+.toggle::after { content: ""; position: absolute; right: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--phone-bg); }
+.meter { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 11%; background: var(--ok); }
+.sample { font-family: var(--f-mono); font-size: 10px; color: var(--muted); text-align: center; }
+.decisions { display: grid; gap: 10px; counter-reset: d; }
+.decision { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 4px; }
+footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+@media (max-width: 520px) { .ph { height: 600px; } h2 { font-size: 1.5rem; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Blueprint for approval · v1 · 10 Oct 2026</div>
+    <h1>PersonalOS</h1>
+    <p class="lede">A private web app that turns scattered notes, photos and Gmail into one record of your household, then tells you what needs doing today and briefs you before an appointment.</p>
+    <div class="meta">
+      <span class="pill draft">Draft: waiting on Raj's approval</span>
+      <span class="pill">Single user: Raj</span>
+      <span class="pill">iPhone home-screen web app</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Sections">
+    <a href="#prd">1. PRD</a>
+    <a href="#architecture">2. Architecture</a>
+    <a href="#screens">3. Screens</a>
+    <a href="#decisions">4. Open decisions</a>
+  </nav>
+
+  <!-- ===================== PRD ===================== -->
+  <section class="part" id="prd">
+    <div class="part-head">
+      <div class="eyebrow">Part 1</div>
+      <h2>Product requirements</h2>
+    </div>
+
+    <div class="col block">
+      <h3>Problem</h3>
+      <p>Personal admin is scattered across notes apps, Gmail, reminders and memory. Three things go wrong as a result:</p>
+      <ul>
+        <li><strong>Records can't be pulled together when needed.</strong> At the vet or the GP, the symptoms noted over the past few weeks are spread across several apps.</li>
+        <li><strong>Promises from other people get forgotten.</strong> The insurer said "within two weeks". Three weeks later nobody has chased it.</li>
+        <li><strong>Deadlines live in photos and emails.</strong> An invoice photo or a renewal email has a due date that never makes it into a reminder.</li>
+      </ul>
+    </div>
+
+    <div class="col block">
+      <h3>Goals for v1</h3>
+      <ol>
+        <li><strong>Capture in under 10 seconds</strong> by text, voice or photo, with no filing decisions.</li>
+        <li><strong>Brief me:</strong> a one-page summary for any person or thing in your life (Joey's health, the HR-V) in under 30 seconds.</li>
+        <li><strong>Nothing slips:</strong> every deadline and every "we'll get back to you" shows on Today until it's done.</li>
+        <li><strong>Gmail without effort:</strong> relevant emails are picked up automatically and turned into items and follow-ups.</li>
+        <li><strong>Cheap to run:</strong> AI spend under $5 a month, with a hard cap at $10.</li>
+      </ol>
+    </div>
+
+    <div class="col block">
+      <h3>Not in v1</h3>
+      <ul>
+        <li>Other users, including your wife's own login. The data model will allow it later.</li>
+        <li>Email digest, a dedicated voice record button, photo gallery import.</li>
+        <li>Writing or sending email. Gmail stays strictly read-only.</li>
+        <li>Detecting replies automatically to close follow-ups. You mark them done.</li>
+        <li>Medical advice. The app records and summarises. It never diagnoses.</li>
+        <li>Billing, a public sign-up page, Google verification.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Who and what it tracks</h3>
+      <p class="col">Every item is tagged on two separate dimensions. Combining them is what makes "Joey + Health" a precise query. The AI can suggest a new entry (say, a second car), and nothing is added until you approve it.</p>
+      <div class="two">
+        <div class="card">
+          <div class="eyebrow">Who it's about</div>
+          <div class="chipset">
+            <span class="tag"><span class="dot" style="background:var(--c-me)"></span>Me</span>
+            <span class="tag"><span class="dot" style="background:var(--c-wife)"></span>Wife <span class="muted">(name TBC)</span></span>
+            <span class="tag"><span class="dot" style="background:var(--c-joey)"></span>Joey</span>
+            <span class="tag"><span class="dot" style="background:var(--c-house)"></span>House</span>
+            <span class="tag"><span class="dot" style="background:var(--c-car)"></span>Honda HR-V</span>
+            <span class="tag"><span class="dot" style="background:var(--c-family)"></span>Parents</span>
+            <span class="tag"><span class="dot" style="background:var(--c-family)"></span>In-laws</span>
+            <span class="tag"><span class="dot" style="background:var(--c-family)"></span>Sister</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Area</div>
+          <div class="chipset">
+            <span class="tag">Health</span>
+            <span class="tag">Insurance</span>
+            <span class="tag">Finance and bills</span>
+            <span class="tag">Home</span>
+            <span class="tag">Job search</span>
+            <span class="tag">Admin</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Inputs</h3>
+      <div class="tablebox">
+        <table>
+          <thead><tr><th>Input</th><th>How you use it</th><th>What the app does</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Text</strong></td><td>Type into the capture box</td><td>Saves the original, then the AI extracts tags, dates and follow-ups</td></tr>
+            <tr><td><strong>Voice</strong></td><td>Tap the mic on the iPhone keyboard and speak</td><td>Same as text. iOS does the transcription for free</td></tr>
+            <tr><td><strong>Photo</strong></td><td>Take or upload a photo, with an optional caption</td><td>Stores the photo privately. The AI describes what it shows (a red patch on Joey's belly) or reads the text (invoice amount, due date)</td></tr>
+            <tr><td><strong>Gmail</strong></td><td>Nothing. It runs on its own</td><td>Checks every 15 minutes. Free filters drop newsletters and promotions, then the AI checks what's left for deadlines, promises and appointments. Relevant finds appear on Today under "New from Gmail" for you to keep or dismiss</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>What the AI extracts from each item</h3>
+      <div class="tablebox">
+        <table>
+          <thead><tr><th>Field</th><th>Example (from "Joey scratching his ear again, vet said come back if it continues past Friday")</th></tr></thead>
+          <tbody>
+            <tr><td>Who</td><td>Joey</td></tr>
+            <tr><td>Area</td><td>Health</td></tr>
+            <tr><td>When it happened</td><td>Today, 10 Oct</td></tr>
+            <tr><td>Summary</td><td>Scratching his ear again</td></tr>
+            <tr><td>Follow-up</td><td>"Book vet if ear scratching continues", on you, due Sat 18 Oct</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="col muted">The original text, photo or email snippet is always kept next to the extracted fields. Every tag can be corrected with one tap.</p>
+    </div>
+
+    <div class="block">
+      <h3>Follow-ups: the core object</h3>
+      <div class="two">
+        <div class="card">
+          <span class="state overdue" style="justify-self:start">On me</span>
+          <p>Something you have to do by a date. "Pay invoice by 24 Oct." "Call insurer on Monday."</p>
+        </div>
+        <div class="card">
+          <span class="state wait" style="justify-self:start">Waiting on them</span>
+          <p>Someone promised to get back to you. "We'll respond within 10 business days." The app works out the expected date. Once that date passes, it moves to the top of Today as <strong>overdue</strong>, with a suggestion to chase.</p>
+        </div>
+      </div>
+      <p class="col">Each follow-up can be <strong>Done</strong> (one tap) or <strong>Snoozed</strong> (tomorrow, next week, or a chosen date).</p>
+    </div>
+
+    <div class="block">
+      <h3>Today screen rules</h3>
+      <ol class="col">
+        <li><strong>Overdue:</strong> past due, or waiting-on-them past the expected date. Red.</li>
+        <li><strong>Due today.</strong> Amber.</li>
+        <li><strong>New from Gmail:</strong> items found since you last looked. Keep or dismiss.</li>
+        <li><strong>Coming up:</strong> the next 7 days.</li>
+        <li><strong>Waiting on:</strong> open promises from others that aren't due yet.</li>
+      </ol>
+    </div>
+
+    <div class="block">
+      <h3>Notifications</h3>
+      <ul class="col">
+        <li><strong>7:00am Melbourne time, daily:</strong> "2 due today, 1 overdue." Skipped if there's nothing to report.</li>
+        <li><strong>When Gmail finds something due within 3 days.</strong></li>
+        <li>No other notifications. Push is free. It needs the app saved to your home screen and notifications allowed once.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Ask and briefs</h3>
+      <p class="col">You type or dictate a question, such as "brief me for Joey's vet visit" or "when did I last have a headache?". The app filters the database, then writes an answer from only the matching items. Every point links to the note or email it came from, so you can check it. If nothing matches, it says so rather than guessing.</p>
+    </div>
+
+    <div class="block">
+      <h3>AI models and cost</h3>
+      <div class="tablebox">
+        <table>
+          <thead><tr><th>Job</th><th>Model</th><th>Why</th><th>Rough cost</th></tr></thead>
+          <tbody>
+            <tr><td>Tag notes, read emails, find follow-ups, turn a question into a filter</td><td><strong>Claude Haiku 5.5</strong></td><td>Simple sorting and extraction at high volume</td><td class="num">&lt; $0.001 / item</td></tr>
+            <tr><td>Photos (invoices, symptoms)</td><td><strong>Haiku 5.5</strong>, retried on <strong>Sonnet 5.5</strong> if unsure</td><td>Most photos are easy. Sonnet only steps in for unclear ones</td><td class="num">~$0.001 to $0.01</td></tr>
+            <tr><td>Briefs and Ask answers</td><td><strong>Claude Sonnet 5.5</strong></td><td>Needs judgement to pull scattered notes into a useful summary</td><td class="num">~$0.05 / brief</td></tr>
+            <tr><td>90-day Gmail backfill</td><td><strong>Haiku 5.5</strong> via Batch API</td><td>Half price, runs once, overnight</td><td class="num">&lt; $1 total</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>Cost guardrails</strong>
+        <ul>
+          <li>The AI reads each item once. Browsing Today and timelines never calls the AI.</li>
+          <li>Free filters run before any AI: Gmail's Promotions and Social tabs and emails with an unsubscribe header are skipped. Quoted replies and signatures are stripped.</li>
+          <li>Fixed instructions are cached between calls, which cuts repeat input cost.</li>
+          <li>A hard $10 monthly limit set in the Anthropic console, plus month-to-date spend shown in Settings.</li>
+          <li><strong>Expected:</strong> $1 to $3 a month after the backfill.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Privacy and security</h3>
+      <ul class="col">
+        <li>Sign-in with Google, locked to one email address. Anyone else is refused.</li>
+        <li>Database rules: every row is readable only by its owner. Photos sit in private storage behind expiring links.</li>
+        <li>Gmail permission is <code>gmail.readonly</code>. The app cannot send, delete or change email. The access token is stored encrypted.</li>
+        <li>Only the extracted signal and a short snippet are stored from email, with a link back to the original in Gmail. Full emails are not copied.</li>
+        <li>Data is sent only to Anthropic for processing. Anthropic doesn't train on API data by default.</li>
+        <li>Export everything as a file, or delete everything, from Settings.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>How we'll know it works</h3>
+      <div class="tablebox">
+        <table>
+          <thead><tr><th>Measure</th><th>Target after 4 weeks of use</th></tr></thead>
+          <tbody>
+            <tr><td>You open Today</td><td>5+ days a week</td></tr>
+            <tr><td>Tags that need correcting</td><td>Fewer than 1 in 10 items</td></tr>
+            <tr><td>Gmail follow-ups missed</td><td>None you later discover by accident</td></tr>
+            <tr><td>Vet or GP brief</td><td>Ready in under 30 seconds, and you'd hand it to the vet</td></tr>
+            <tr><td>AI spend</td><td>Under $5 a month</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Build milestones</h3>
+      <div class="tablebox">
+        <table>
+          <thead><tr><th>#</th><th>Milestone</th><th>Done when</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1</td><td>Skeleton: sign-in, database, Today screen</td><td>You can sign in and see an empty Today</td></tr>
+            <tr><td class="num">2</td><td>Text and photo capture with AI extraction</td><td>A note or photo appears tagged, with its follow-up</td></tr>
+            <tr><td class="num">3</td><td>Browse timelines and Ask</td><td>"Brief me for Joey's vet" returns a cited summary</td></tr>
+            <tr><td class="num">4</td><td>Gmail: connect, filters, 90-day backfill, 15-minute scan</td><td>A real "we'll respond in 2 weeks" email becomes a waiting-on follow-up</td></tr>
+            <tr><td class="num">5</td><td>Follow-up states: overdue, done, snooze</td><td>Today orders and colours items correctly</td></tr>
+            <tr><td class="num">6</td><td>Push notifications</td><td>A 7am push arrives on your iPhone</td></tr>
+            <tr><td class="num">7</td><td>Tests, sample data, step-by-step setup guide</td><td>You go from zero to live by following the guide</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ARCHITECTURE ===================== -->
+  <section class="part" id="architecture">
+    <div class="part-head">
+      <div class="eyebrow">Part 2</div>
+      <h2>Technical architecture</h2>
+      <p class="lede">Four hosted services, all on free tiers except the Anthropic credit. No servers to manage.</p>
+    </div>
+
+    <div class="block">
+      <h3>System overview</h3>
+      <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  subgraph PHONE["iPhone: home-screen web app"]
+    UI["Today · Browse · Capture · Ask · Settings"]
+  end
+  subgraph VERCEL["Vercel: Next.js app"]
+    API["API routes"]
+    EXT["Extraction service"]
+    ASK["Ask service"]
+    SYNC["Gmail sync job"]
+    PUSH["Push sender"]
+  end
+  subgraph SUPA["Supabase"]
+    AUTH["Auth: Google sign-in, one allowed email"]
+    DB[("Postgres: items, follow-ups, who, areas")]
+    STORE[("Private photo storage")]
+    CRON["Scheduler: every 15 min, 7am daily"]
+  end
+  ANT["Anthropic API: Haiku 5.5, Sonnet 5.5"]
+  GMAIL["Gmail API: read-only"]
+  APPLE["Apple push service"]
+  UI --> API
+  API --> AUTH
+  API --> DB
+  API --> STORE
+  API --> EXT
+  API --> ASK
+  EXT --> ANT
+  ASK --> ANT
+  EXT --> DB
+  ASK --> DB
+  CRON --> SYNC
+  SYNC --> GMAIL
+  SYNC --> EXT
+  CRON --> PUSH
+  PUSH --> DB
+  PUSH --> APPLE
+  APPLE --> UI
+</pre>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="card">
+        <h3>What happens to a note or photo</h3>
+<div class="diagram" style="padding:8px">
+<pre class="mermaid" style="min-width:280px">
+flowchart TD
+  A["You capture text, dictation or a photo"] --> B["Original saved instantly"]
+  B --> C["Haiku extracts who, area, dates, follow-ups"]
+  C --> D{"Confident?"}
+  D -- "Yes" --> E["Filed, shown on Today if due"]
+  D -- "No, photo" --> F["Sonnet retries"]
+  F --> E
+  D -- "No, text" --> G["Filed, flagged: check tags"]
+</pre>
+</div>
+      </div>
+      <div class="card">
+        <h3>What happens when you Ask</h3>
+<div class="diagram" style="padding:8px">
+<pre class="mermaid" style="min-width:280px">
+flowchart TD
+  Q["Brief me for Joey's vet visit"] --> P["Haiku turns it into a filter: Joey, Health, last 6 months"]
+  P --> S["Database: tag filter plus keyword search on originals"]
+  S --> N{"Anything found?"}
+  N -- "Yes" --> W["Sonnet writes the brief from those items only"]
+  N -- "No" --> X["Says nothing matched"]
+  W --> R["Brief with links to each source"]
+</pre>
+</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Retrieval: why there are no vectors</h3>
+      <p class="col">Every item is tagged when it comes in, so most questions are an exact filter on tags. Postgres keyword search over the original text catches anything the tags missed. At a few thousand items this is faster, cheaper and more precise than embeddings. If Ask starts missing things, embeddings can be added later without changing anything else.</p>
+    </div>
+
+    <div class="block">
+      <h3>Gmail sync</h3>
+      <ul class="col">
+        <li><strong>Connect once</strong> through Google's consent screen. The OAuth app is set to "In production" without verification, so access doesn't expire after 7 days. You'll click past an "unverified app" warning once.</li>
+        <li><strong>Backfill:</strong> the last 90 days, filtered, sent through the Anthropic Batch API overnight.</li>
+        <li><strong>Ongoing:</strong> every 15 minutes, Gmail's change history returns only new messages since the last check. Cheap and fast.</li>
+        <li><strong>Free filters first:</strong> skip Promotions and Social, skip emails with an unsubscribe header, skip anything already seen. Strip quoted replies, signatures and HTML.</li>
+        <li><strong>Stored:</strong> the extracted signal, a 300-character snippet, the sender, the date and a link to open the email in Gmail.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Data model</h3>
+      <div class="tablebox">
+        <table>
+          <thead><tr><th>Table</th><th>Holds</th><th>Key fields</th></tr></thead>
+          <tbody>
+            <tr><td><code>items</code></td><td>Every captured thing</td><td>source (text, photo, gmail), original text, photo path, Gmail message ID, summary, happened-on date, status, search index</td></tr>
+            <tr><td><code>subjects</code></td><td>Who it's about</td><td>name, kind (person, pet, home, vehicle), colour</td></tr>
+            <tr><td><code>areas</code></td><td>Health, Insurance and so on</td><td>name</td></tr>
+            <tr><td><code>item_subjects</code>, <code>item_areas</code></td><td>Tags on each item</td><td>item, subject or area, set by AI or by you</td></tr>
+            <tr><td><code>followups</code></td><td>Things due</td><td>item, title, direction (on me or waiting on them), due date, status (open, done, snoozed), snoozed until</td></tr>
+            <tr><td><code>gmail_state</code></td><td>Sync position</td><td>encrypted token, last history ID, last sync time</td></tr>
+            <tr><td><code>push_subscriptions</code></td><td>Your iPhone's push address</td><td>endpoint, keys</td></tr>
+            <tr><td><code>ai_usage</code></td><td>Spend tracking</td><td>model, purpose, tokens in and out, cost</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="col muted">Every table carries an owner ID from day one, so adding your wife later is a sharing feature, not a rebuild.</p>
+    </div>
+
+    <div class="block">
+      <h3>Stack</h3>
+      <div class="tablebox">
+        <table>
+          <thead><tr><th>Layer</th><th>Choice</th><th>Cost</th></tr></thead>
+          <tbody>
+            <tr><td>App and API</td><td>Next.js (TypeScript), installable web app with push support</td><td class="num">Free</td></tr>
+            <tr><td>Hosting</td><td>Vercel</td><td class="num">Free tier</td></tr>
+            <tr><td>Database, sign-in, photos, scheduler</td><td>Supabase (Postgres)</td><td class="num">Free tier</td></tr>
+            <tr><td>AI</td><td>Anthropic API, official TypeScript SDK</td><td class="num">~$1-3 / month</td></tr>
+            <tr><td>Email</td><td>Gmail API, read-only, via your own Google Cloud project</td><td class="num">Free</td></tr>
+            <tr><td>Push</td><td>Standard Web Push to Apple's push service</td><td class="num">Free</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SCREENS ===================== -->
+  <section class="part" id="screens">
+    <div class="part-head">
+      <div class="eyebrow">Part 3</div>
+      <h2>UI and UX design</h2>
+      <p class="lede">Five tabs. Today is the home screen. Capture is the big button in the middle, always one tap away. All content in these mockups is sample data.</p>
+    </div>
+
+    <div class="col block">
+      <h3>Design principles</h3>
+      <ul>
+        <li><strong>Capture first, file never.</strong> You never pick a folder or tag. You only correct one when it's wrong.</li>
+        <li><strong>State at a glance.</strong> Colour stripe and label on every follow-up: red overdue, amber today, blue-grey waiting, indigo new.</li>
+        <li><strong>Every AI output shows its source.</strong> Briefs cite notes. Gmail finds show the sender and snippet.</li>
+        <li><strong>Thumb reach.</strong> Main actions sit in the bottom half of the screen.</li>
+      </ul>
+    </div>
+
+    <div class="screens">
+      <!-- TODAY -->
+      <div class="screen">
+        <div class="screen-cap">
+          <h3>Today</h3>
+          <p>Home screen. What needs you now, in priority order.</p>
+        </div>
+        <div class="phone"><div class="ph">
+          <div class="ph-status"><span>7:02</span><span>Sat 10 Oct</span></div>
+          <div class="ph-body">
+            <div class="ph-title"><h4>Today</h4><span>1 overdue · 2 due</span></div>
+            <div class="sec"><span>Overdue</span></div>
+            <div class="task overdue">
+              <div class="task-top"><span class="task-title">Chase pet insurer about Joey's claim</span><span class="state overdue">7 days</span></div>
+              <div class="task-meta"><span class="mini"><span class="dot" style="background:var(--c-joey)"></span>Joey</span><span class="mini">Insurance</span><span class="src">Gmail · promised by 3 Oct</span></div>
+              <div class="actions"><span class="btn primary">Done</span><span class="btn">Snooze</span><span class="btn">Open email</span></div>
+            </div>
+            <div class="sec"><span>Due today</span></div>
+            <div class="task due">
+              <div class="task-top"><span class="task-title">Pay plumber invoice, $240</span><span class="state due">Today</span></div>
+              <div class="task-meta"><span class="mini"><span class="dot" style="background:var(--c-house)"></span>House</span><span class="mini">Bills</span><span class="src">Photo · 2 Oct</span></div>
+            </div>
+            <div class="task due">
+              <div class="task-top"><span class="task-title">Joey ear drops, day 5 of 7</span><span class="state due">Today</span></div>
+              <div class="task-meta"><span class="mini"><span class="dot" style="background:var(--c-joey)"></span>Joey</span><span class="mini">Health</span></div>
+            </div>
+            <div class="sec"><span>New from Gmail</span><span>1</span></div>
+            <div class="task new">
+              <div class="task-top"><span class="task-title">HR-V service booked, Thu 16 Oct 8am</span><span class="state new">New</span></div>
+              <div class="task-meta"><span class="mini"><span class="dot" style="background:var(--c-car)"></span>HR-V</span><span class="src">From: dealer service desk</span></div>
+              <div class="actions"><span class="btn primary">Keep</span><span class="btn">Dismiss</span></div>
+            </div>
+            <div class="sec"><span>Waiting on</span><span>2</span></div>
+          </div>
+          <div class="ph-tabs">
+            <div class="on"><i></i>Today</div><div><i></i>Browse</div><div class="plus"><i></i>Capture</div><div><i></i>Ask</div><div><i></i>Settings</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- CAPTURE -->
+      <div class="screen">
+        <div class="screen-cap">
+          <h3>Capture</h3>
+          <p>Type, dictate with the keyboard mic, or add a photo. The app confirms what it filed.</p>
+        </div>
+        <div class="phone"><div class="ph">
+          <div class="ph-status"><span>18:40</span><span>Fri 10 Oct</span></div>
+          <div class="ph-body">
+            <div class="ph-title"><h4>Capture</h4><span>Cancel</span></div>
+            <div class="input">Joey scratching his left ear again, a bit red inside. Vet said come back if it continues past Friday.</div>
+            <div class="hint">Tip: tap the mic on your keyboard to dictate.</div>
+            <div class="row3"><span class="tile">Take photo</span><span class="tile">Upload</span><span class="tile" style="border-style:solid;background:var(--accent);color:var(--phone-bg);border-color:var(--accent)">Save</span></div>
+            <div class="sec"><span>Filed just now</span></div>
+            <div class="filed">
+              <b>Saved and filed</b>
+              <dl class="kv">
+                <dt>Who</dt><dd><span class="mini"><span class="dot" style="background:var(--c-joey)"></span>Joey</span></dd>
+                <dt>Area</dt><dd><span class="mini">Health</span></dd>
+                <dt>Summary</dt><dd>Scratching left ear, redness inside</dd>
+                <dt>Follow-up</dt><dd>Book vet if still scratching · <strong>Sat 18 Oct</strong></dd>
+              </dl>
+              <div class="actions"><span class="btn">Edit tags</span><span class="btn">Undo</span></div>
+            </div>
+            <div class="sec"><span>Photo example</span></div>
+            <div class="task">
+              <div class="task-top"><span class="task-title">Invoice: Plumber, $240, due 10 Oct</span><span class="thumb"></span></div>
+              <div class="task-meta"><span class="mini"><span class="dot" style="background:var(--c-house)"></span>House</span><span class="mini">Bills</span><span class="src">read from photo</span></div>
+            </div>
+          </div>
+          <div class="ph-tabs">
+            <div><i></i>Today</div><div><i></i>Browse</div><div class="plus on"><i></i>Capture</div><div><i></i>Ask</div><div><i></i>Settings</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- BROWSE / JOEY -->
+      <div class="screen">
+        <div class="screen-cap">
+          <h3>Browse: Joey</h3>
+          <p>Each person or thing has a timeline, filterable by area. One tap to brief.</p>
+        </div>
+        <div class="phone"><div class="ph">
+          <div class="ph-status"><span>09:15</span><span>Sat 11 Oct</span></div>
+          <div class="ph-body">
+            <div class="subject-head"><div class="avatar">J</div><div><div style="font-family:var(--f-display);font-weight:700;font-size:20px">Joey</div><div class="hint">Pet · 23 items · 1 open follow-up</div></div></div>
+            <div class="filters"><span>All</span><span class="on">Health</span><span>Insurance</span><span>Bills</span></div>
+            <span class="cta">Brief me for the vet</span>
+            <div class="tl">
+              <div class="tl-item"><span class="tl-date">10 Oct · Note</span><span class="tl-text">Scratching left ear again, redness inside.</span></div>
+              <div class="tl-item"><span class="tl-date">06 Oct · Photo</span><span class="tl-text">Red patch on belly, about 2cm, no broken skin.</span><span class="thumb"></span></div>
+              <div class="tl-item"><span class="tl-date">03 Oct · Note</span><span class="tl-text">Started ear drops, twice daily for 7 days.</span></div>
+              <div class="tl-item"><span class="tl-date">02 Oct · Gmail</span><span class="tl-text">Vet visit receipt. Ear infection, drops prescribed.</span></div>
+              <div class="tl-item"><span class="tl-date">21 Sep · Note</span><span class="tl-text">Off his food in the evening, fine by morning.</span></div>
+            </div>
+          </div>
+          <div class="ph-tabs">
+            <div><i></i>Today</div><div class="on"><i></i>Browse</div><div class="plus"><i></i>Capture</div><div><i></i>Ask</div><div><i></i>Settings</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- ASK -->
+      <div class="screen">
+        <div class="screen-cap">
+          <h3>Ask: vet brief</h3>
+          <p>Answers come only from your records, with every point linked to its source.</p>
+        </div>
+        <div class="phone"><div class="ph">
+          <div class="ph-status"><span>09:16</span><span>Sat 11 Oct</span></div>
+          <div class="ph-body">
+            <div class="ph-title"><h4>Ask</h4><span>~5c</span></div>
+            <div class="q">Brief me for Joey's vet visit</div>
+            <div class="brief">
+              <div class="sec"><span>Joey · Health · last 6 weeks</span></div>
+              <div><h5>Since the last visit (2 Oct)</h5>
+                <ul>
+                  <li>Ear drops started 3 Oct, twice daily <span class="cite">[3 Oct]</span></li>
+                  <li>Still scratching left ear, redness inside <span class="cite">[10 Oct]</span></li>
+                  <li>New: red patch on belly, about 2cm <span class="cite">[6 Oct photo]</span></li>
+                </ul>
+              </div>
+              <div><h5>Earlier</h5>
+                <ul><li>Off food one evening, recovered by morning <span class="cite">[21 Sep]</span></li></ul>
+              </div>
+              <div><h5>Open</h5>
+                <ul><li>Insurance claim for 2 Oct visit not yet answered <span class="cite">[Gmail]</span></li></ul>
+              </div>
+              <div class="d">Based on 6 notes, 1 photo, 2 emails. Records only, not medical advice.</div>
+            </div>
+            <div class="actions"><span class="btn">Copy</span><span class="btn">Show photo</span></div>
+          </div>
+          <div class="ph-tabs">
+            <div><i></i>Today</div><div><i></i>Browse</div><div class="plus"><i></i>Capture</div><div class="on"><i></i>Ask</div><div><i></i>Settings</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="screen">
+        <div class="screen-cap">
+          <h3>Settings</h3>
+          <p>Gmail status, notifications, AI spend and your lists of who and areas.</p>
+        </div>
+        <div class="phone"><div class="ph">
+          <div class="ph-status"><span>09:20</span><span>Sat 11 Oct</span></div>
+          <div class="ph-body">
+            <div class="ph-title"><h4>Settings</h4></div>
+            <div class="sec"><span>Gmail</span></div>
+            <div class="set">
+              <div><span>Connected, read-only</span><span class="state ok">OK</span></div>
+              <div><span>Last check</span><span class="v">6 min ago</span></div>
+              <div><span>Found this week</span><span class="v">4 kept · 2 dismissed</span></div>
+            </div>
+            <div class="sec"><span>Notifications</span></div>
+            <div class="set">
+              <div><span>Daily summary, 7:00am</span><span class="toggle"></span></div>
+              <div><span>Gmail: due within 3 days</span><span class="toggle"></span></div>
+            </div>
+            <div class="sec"><span>AI spend · October</span></div>
+            <div class="set">
+              <div style="display:grid;gap:6px;justify-content:stretch"><span style="display:flex;justify-content:space-between"><span>$1.12 of $10.00 cap</span><span class="v">142 items</span></span><span class="meter"><i></i></span></div>
+            </div>
+            <div class="sec"><span>Lists</span></div>
+            <div class="set">
+              <div><span>Who</span><span class="v">8 ›</span></div>
+              <div><span>Areas</span><span class="v">6 ›</span></div>
+              <div><span>Export or delete all data</span><span class="v">›</span></div>
+            </div>
+          </div>
+          <div class="ph-tabs">
+            <div><i></i>Today</div><div><i></i>Browse</div><div class="plus"><i></i>Capture</div><div><i></i>Ask</div><div class="on"><i></i>Settings</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- BROWSE INDEX -->
+      <div class="screen">
+        <div class="screen-cap">
+          <h3>Browse</h3>
+          <p>Everyone and everything you track, with open follow-ups counted.</p>
+        </div>
+        <div class="phone"><div class="ph">
+          <div class="ph-status"><span>09:14</span><span>Sat 11 Oct</span></div>
+          <div class="ph-body">
+            <div class="ph-title"><h4>Browse</h4><span>Search</span></div>
+            <div class="set">
+              <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-me)"></span>Me</span><span class="v">41 items · 2 open</span></div>
+              <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-wife)"></span>Wife</span><span class="v">12 items</span></div>
+              <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-joey)"></span>Joey</span><span class="v">23 items · 1 open</span></div>
+              <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-house)"></span>House</span><span class="v">18 items · 1 open</span></div>
+              <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-car)"></span>Honda HR-V</span><span class="v">7 items · 1 open</span></div>
+              <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-family)"></span>Parents</span><span class="v">5 items</span></div>
+              <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-family)"></span>In-laws</span><span class="v">3 items</span></div>
+              <div><span class="mini" style="border:0;font-size:13px"><span class="dot" style="background:var(--c-family)"></span>Sister</span><span class="v">2 items</span></div>
+            </div>
+            <div class="sec"><span>Or by area</span></div>
+            <div class="filters"><span>Health</span><span>Insurance</span><span>Finance and bills</span><span>Home</span><span>Job search</span><span>Admin</span></div>
+            <div class="hint">Suggested by AI: add "Vet clinic" as a place? <strong style="color:var(--accent)">Add</strong> · Ignore</div>
+          </div>
+          <div class="ph-tabs">
+            <div><i></i>Today</div><div class="on"><i></i>Browse</div><div class="plus"><i></i>Capture</div><div><i></i>Ask</div><div><i></i>Settings</div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+    <p class="sample">All names, amounts and dates in the mockups are sample data.</p>
+  </section>
+
+  <!-- ===================== DECISIONS ===================== -->
+  <section class="part" id="decisions">
+    <div class="part-head">
+      <div class="eyebrow">Part 4</div>
+      <h2>Open decisions</h2>
+      <p class="lede">Approve or change these, then the build starts at milestone 1.</p>
+    </div>
+    <div class="decisions col">
+      <div class="decision"><strong>Your wife's name</strong><span class="muted">Shown as "Wife" until you tell me. Can also be changed in Settings at any time.</span></div>
+      <div class="decision"><strong>"Jev"</strong><span class="muted">I didn't recognise the tool you mentioned. Tell me what it is and I'll say whether it earns a place.</span></div>
+      <div class="decision"><strong>Model split</strong><span class="muted">Haiku 5.5 for extraction, Sonnet 5.5 for briefs, no Opus. Approve or change.</span></div>
+      <div class="decision"><strong>No vectors in v1</strong><span class="muted">Tags plus keyword search. Embeddings only if Ask misses things in practice.</span></div>
+      <div class="decision"><strong>Gmail finds need a tap to keep</strong><span class="muted">New Gmail items wait under "New from Gmail" until you keep or dismiss them. The alternative is filing them silently, with less control and more noise.</span></div>
+      <div class="decision"><strong>Visual direction</strong><span class="muted">Calm off-white, ink text, one indigo accent, colour reserved for status. Happy with that, or want something warmer?</span></div>
+    </div>
+  </section>
+
+  <footer>PersonalOS blueprint v1 · Saved in the repo at docs/blueprint.html · Prepared for Raj, 10 Oct 2026</footer>
+</div>
