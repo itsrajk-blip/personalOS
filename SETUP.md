@@ -56,12 +56,16 @@ One Google OAuth app does both jobs.
 
 1. Go to [vercel.com](https://vercel.com) and sign up with GitHub.
 2. **Add New** → **Project** → import `itsrajk-blip/personalOS`. Framework: Next.js (detected). Don't deploy yet: open **Environment Variables** first.
-3. Generate the random values. On a Mac, open Terminal and run each line, copying the output:
-   ```
-   openssl rand -base64 32        # TOKEN_ENCRYPTION_KEY
-   openssl rand -base64 32        # CRON_SECRET (run it again for a different value)
-   npx web-push generate-vapid-keys   # gives a Public Key and a Private Key
-   ```
+3. Generate four random values. They work like passwords for the app; you paste them into Vercel and never need to remember them. On your Mac, press **Cmd + Space**, type `Terminal`, press Enter.
+   - **TOKEN_ENCRYPTION_KEY**: paste `openssl rand -base64 32`, press Enter, copy the line it prints.
+   - **CRON_SECRET**: run the same command again (up arrow, Enter) and copy the new value.
+   - **Notification keys**: paste these three lines together and press Enter:
+     ```
+     openssl ecparam -genkey -name prime256v1 -noout -out /tmp/vapid.pem
+     echo "PUBLIC:  $(openssl ec -in /tmp/vapid.pem -pubout -outform DER 2>/dev/null | tail -c 65 | base64 | tr -d '\n' | tr '/+' '_-' | tr -d '=')"
+     echo "PRIVATE: $(openssl ec -in /tmp/vapid.pem -outform DER 2>/dev/null | tail -c +8 | head -c 32 | base64 | tr '/+' '_-' | tr -d '=')"
+     ```
+     The PUBLIC value (about 87 characters) is `NEXT_PUBLIC_VAPID_PUBLIC_KEY`; the PRIVATE value (about 43 characters) is `VAPID_PRIVATE_KEY`. Copy only the value after the label, then run `rm /tmp/vapid.pem`.
 4. Add these environment variables (names exactly as shown):
 
    | Name | Value |
