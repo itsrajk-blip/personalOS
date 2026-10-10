@@ -148,6 +148,20 @@ create table public.app_state (
 );
 
 -- Row level security: owners see and change only their own rows.
+-- Enabled with one plain statement per table so the Supabase SQL editor's check can see it.
+alter table public.subjects enable row level security;
+alter table public.areas enable row level security;
+alter table public.items enable row level security;
+alter table public.item_subjects enable row level security;
+alter table public.item_areas enable row level security;
+alter table public.followups enable row level security;
+alter table public.subject_suggestions enable row level security;
+alter table public.gmail_accounts enable row level security;
+alter table public.gmail_queue enable row level security;
+alter table public.push_subscriptions enable row level security;
+alter table public.ai_usage enable row level security;
+alter table public.app_state enable row level security;
+
 do $$
 declare t text;
 begin
@@ -155,7 +169,6 @@ begin
                            'subject_suggestions', 'gmail_accounts', 'gmail_queue', 'push_subscriptions',
                            'ai_usage', 'app_state']
   loop
-    execute format('alter table public.%I enable row level security', t);
     execute format(
       'create policy "owner access" on public.%I for all to authenticated using (owner_id = auth.uid()) with check (owner_id = auth.uid())',
       t);
