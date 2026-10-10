@@ -22,7 +22,7 @@ export const env = {
   vapidPublicKey: () => process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "",
   vapidPrivateKey: () => required("VAPID_PRIVATE_KEY"),
   vapidSubject: () => process.env.VAPID_SUBJECT ?? "mailto:admin@example.com",
-  monthlyCapUsd: () => Number(process.env.AI_MONTHLY_CAP_USD ?? "10"),
+  monthlyCapUsd: () => Number(process.env.AI_MONTHLY_CAP_USD ?? "5"),
   /** Local development only: act as this user without Google sign-in. Ignored in production. */
   devUser: (): { id: string; email: string } | null => {
     if (process.env.NODE_ENV === "production") return null;

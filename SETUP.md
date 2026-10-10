@@ -30,8 +30,8 @@ Note: the free plan pauses a project after 7 days with no activity. The 15-minut
 ## 2. Anthropic (the AI)
 
 1. Go to [console.anthropic.com](https://console.anthropic.com) and sign up.
-2. **Billing**: add a card and buy $10 of credit.
-3. **Limits** (under Settings): set a monthly spend limit of **$10**. This is your hard ceiling; the app also stops itself at $10.
+2. **Billing**: add a card and buy $5 of credit (unused credit carries over).
+3. **Limits** (under Settings): set a monthly spend limit of **$5**. This is your hard ceiling; the app also stops itself at $5.
 4. **API Keys** → **Create key**, name it `personalos`, copy it (`sk-ant-...`). You only see it once.
 
 ## 3. Google Cloud (sign-in with Google, and Gmail read access)
@@ -72,7 +72,7 @@ One Google OAuth app does both jobs.
    | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable key |
    | `SUPABASE_SECRET_KEY` | Supabase secret key |
    | `ANTHROPIC_API_KEY` | Anthropic key |
-   | `AI_MONTHLY_CAP_USD` | `10` |
+   | `AI_MONTHLY_CAP_USD` | `5` |
    | `GOOGLE_CLIENT_ID` | from step 3 |
    | `GOOGLE_CLIENT_SECRET` | from step 3 |
    | `TOKEN_ENCRYPTION_KEY` | first random value |
