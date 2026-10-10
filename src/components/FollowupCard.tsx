@@ -20,7 +20,7 @@ export function FollowupCard({ f, today }: { f: FollowupView; today: string }) {
     f.direction === "waiting_on_them" && bucket === "overdue"
       ? `No reply · ${dueLabel(f.due_date, today)}`
       : f.direction === "waiting_on_them" && f.due_date && bucket !== "today"
-        ? `Expected ${dueLabel(f.due_date, today).toLowerCase()}`
+        ? `Expected ${dueLabel(f.due_date, today).replace(/^(In|Tomorrow)/, (w) => w.toLowerCase())}`
         : dueLabel(f.due_date, today);
   return (
     <div className={`card task ${style}`}>

@@ -16,7 +16,7 @@ const PRICES: Record<string, { input: number; output: number }> = {
 
 let client: Anthropic | null = null;
 export function anthropic(): Anthropic {
-  if (!process.env.ANTHROPIC_API_KEY) throw new AiUnavailableError("ANTHROPIC_API_KEY is not set");
+  if (!process.env.ANTHROPIC_API_KEY) throw new AiUnavailableError("AI isn't set up yet: ANTHROPIC_API_KEY is missing");
   client ??= new Anthropic();
   return client;
 }

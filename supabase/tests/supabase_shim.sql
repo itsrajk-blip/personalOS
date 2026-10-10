@@ -1,10 +1,15 @@
 -- Minimal stand-in for the parts of Supabase the migrations rely on, so they can be tested
 -- against plain Postgres. Not used in production.
-create role anon nologin;
-create role authenticated nologin;
-create role service_role nologin bypassrls;
-create role authenticator login noinherit;
-grant anon, authenticated, service_role to authenticator;
+-- Roles are cluster-wide, so create them only once.
+do $$ begin
+  if not exists (select 1 from pg_roles where rolname = 'anon') then
+    create role anon nologin;
+    create role authenticated nologin;
+    create role service_role nologin bypassrls;
+    create role authenticator login noinherit;
+    grant anon, authenticated, service_role to authenticator;
+  end if;
+end $$;
 
 create schema auth;
 create table auth.users (id uuid primary key, email text);
