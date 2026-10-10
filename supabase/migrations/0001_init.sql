@@ -165,7 +165,7 @@ end $$;
 -- The encrypted Gmail token is only ever read by server code with the secret key.
 -- Signed-in users can see the connection status columns, nothing else.
 revoke all on public.gmail_accounts from anon, authenticated;
-grant select (owner_id, email, history_id, backfill_status, last_sync_at, last_error, connected_at)
+grant select (owner_id, email, history_id, backfill_status, backfill_page_token, last_sync_at, last_error, connected_at)
   on public.gmail_accounts to authenticated;
 
 -- Claims a batch of queued Gmail messages for one worker run. Rows stuck in processing for 10 minutes are retried.

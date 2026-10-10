@@ -27,7 +27,7 @@ npm run lint
 npm test
 ```
 
-`npm test` runs the unit tests. The Gmail sync integration test (`tests/gmail-sync.integration.test.ts`) and the row level security test (`supabase/tests/rls_test.sql`) need a Postgres database; they're skipped otherwise.
+`npm test` runs the unit tests. Three more tests need a database and are skipped otherwise: `supabase/tests/rls_test.sql` (row level security), `tests/rls-store.integration.test.ts` (every data call as a signed-in user) and `tests/gmail-sync.integration.test.ts` (Gmail import with Gmail and the AI faked).
 
 ## Changes from the blueprint
 
