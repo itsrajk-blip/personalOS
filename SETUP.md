@@ -49,7 +49,7 @@ One Google OAuth app does both jobs.
    - `https://YOUR-APP-URL/api/gmail/callback` (you'll know the app URL after step 4; come back and add it then)
    
    Click **Create** and copy the **client ID** and **client secret**.
-5. **Important, so Gmail access doesn't expire every 7 days:** go back to **Audience** and click **Publish app** to move it from Testing to **In production**. Google will say the app needs verification. You don't need it for personal use: leave it unverified. You'll see an "unverified app" warning when you connect, which you click past.
+5. Leave the app in **Testing** for now. Publishing needs a homepage and privacy policy URL, which exist only after step 4. You'll publish in step 4.8.
 6. Back in **Supabase** → **Authentication** → **Sign In / Providers** → **Google**: turn it on, paste the client ID and client secret, **Save**.
 
 ## 4. Vercel (hosting)
@@ -86,6 +86,9 @@ One Google OAuth app does both jobs.
 7. Finish the loose ends with that URL:
    - Google Cloud → your OAuth client → add the redirect URI `https://YOUR-APP-URL/api/gmail/callback`.
    - Supabase → **Authentication** → **URL Configuration**: **Site URL** = your app URL. Under **Redirect URLs** add `https://YOUR-APP-URL/auth/callback`.
+8. **Publish the Google app, so Gmail access doesn't expire every 7 days.** In Google Cloud → **Google Auth Platform**:
+   - **Branding**: **Application home page** = `https://YOUR-APP-URL`, **Application privacy policy link** = `https://YOUR-APP-URL/privacy`. Under **Authorised domains** add your app's domain (e.g. `personalos-xyz.vercel.app`). **Save**.
+   - **Audience** → **Publish app** → confirm. Status changes to **In production**. Google may say the app needs verification: you don't need it for personal use, so leave it unverified. You'll see an "unverified app" warning when you connect, which you click past.
 
 ## 5. First run on your iPhone
 
@@ -112,7 +115,7 @@ The 90-day Gmail import reads about 25 emails per run, so a few hundred emails t
 | "That Google account isn't on the list" | `ALLOWED_EMAILS` in Vercel doesn't match the account. Fix it and redeploy. |
 | Sign-in loops back to the sign-in page | Supabase **Redirect URLs** is missing `https://YOUR-APP-URL/auth/callback`. |
 | Google says `redirect_uri_mismatch` | The URI in the error isn't in your Google OAuth client's redirect URIs. Add it exactly. |
-| Gmail says "access was revoked or expired" | The Google app is still in **Testing** (7-day expiry). Publish it (step 3.5), then **Reconnect** in Settings. |
+| Gmail says "access was revoked or expired" | The Google app is still in **Testing** (7-day expiry). Publish it (step 4.8), then **Reconnect** in Settings. |
 | "Saved, but not filed" on every note | Anthropic key missing or out of credit, or you hit the monthly limit. Check Settings → AI spend and the Anthropic console. |
 | No notifications | Open the app from the home screen icon, not Safari. iPhone needs iOS 16.4 or later. |
 
